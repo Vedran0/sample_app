@@ -14,4 +14,13 @@ class ApplicationController < ActionController::Base
         redirect_to login_url
       end
     end
+
+    #Search users
+    def search(search)
+      if search
+        find(:all, :conditions => ['name LIKE ?', "%#{search}%"])
+      else
+        find(:all)
+      end
+    end
 end

@@ -9,7 +9,11 @@ class UsersController < ApplicationController
   end
 
   def index
-    @users = User.paginate(page: params[:page])
+    if params[:search]
+      @users = User.search(params[:search]).order("created_at DESC").paginate(page: params[:page])
+    else
+      @users = User.all.order('created_at DESC').paginate(page: params[:page])
+    end
   end
 
   def show
@@ -80,5 +84,6 @@ private
     def admin_user
       redirect_to(root_url) unless current_user.admin?
     end
+
 
 end

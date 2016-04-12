@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: users
+#
+#  id                :integer          not null, primary key
+#  name              :string
+#  email             :string
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  password_digest   :string
+#  remember_digest   :string
+#  admin             :boolean          default("f")
+#  activation_digest :string
+#  activated         :boolean          default("f")
+#  activated_at      :datetime
+#  reset_digest      :string
+#  reset_sent_at     :datetime
+#
+
 class User < ActiveRecord::Base
   has_many :microposts, dependent: :destroy
   has_many :active_relationships, class_name:  "Relationship",
@@ -100,6 +119,15 @@ class User < ActiveRecord::Base
   # Returns true if the current user is following the other user.
   def following?(other_user)
     following.include?(other_user)
+  end
+
+  def create_activation_digest
+    self.activation_token  = User.new_token
+    self.activation_digest = User.digest(activation_token)
+  end
+  #search users
+  def self.search(query)
+    where("name like ?", "%#{query}%")
   end
 
 end
